@@ -17,3 +17,4 @@ Dead simple:
 
 `setDOM` can be passed anything that you would usually pass to `jQuery(...)`.
 
+Demo: [padolsey.net/p/jQueryInterface/repo/demo.html](http://padolsey.net/p/jQueryInterface/repo/demo.html)

@@ -1,18 +1,22 @@
 <!doctype html>
 <meta charset="utf-8" />
-<title>Demo</title>
+<title>jQuery.Interface</title>
 
 <style>
+body { font-family: sans-serif;}
 pre { font-size: 1em; padding: 10px; border-top: 1px solid #000;}
 .sub_list {
     padding: 20px;
     font-style: italic;
 }
+span { cursor: default; font-weight: 700; }
 </style>
 
 <body>
 
-<h1>jQuery.Interface: Shopping List Demo</h1>
+<p><a href="https://github.com/jamespadolsey/jQuery.Interface">jQuery.Interface on Github</a></p>
+
+<h1>jQuery.Interface: Shopping List</h1>
 
 <pre>
 var shoppingList = new WordList,
@@ -32,7 +36,15 @@ drinkItems.append(new Word('Milk'));
 shoppingList.appendTo('body');
 </pre>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<h1>jQuery.Interface: HexColorTooltip</h1>
+<p>Hovering over these hex colors should enable a tooltip: <span>#F00</span>, <span>#BADA55</span>, <span>#F011ED</span></p>
+
+<pre>
+var tooltip = new HexColorTooltip();
+tooltip.bindTo('span');
+</pre>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
 <script src="jquery.interface.js"></script>
 <script>
 
@@ -85,7 +97,86 @@ drinkItems.append(new Word('Milk'));
 
 foodItems.add(drinkItems).addClass('sub_list');
 
-shoppingList.insertAfter('h1');
+shoppingList.insertAfter('h1:first');
+
+
+
+
+
+/*** HEX COLOR TOOLTIP DEMO ***/
+
+function HexColorTooltip() {
+
+    this.offsetTop = 10;
+    this.offsetLeft = 10;
+
+    this.setDOM('<div/>', {
+        css: {
+            position: 'absolute',
+            border: '1px solid black',
+            height: 50,
+            width: 50,
+            zIndex: 100
+        }
+    });
+
+    $('body').bind('mousemove', $.proxy(function(e){
+        this.mouseX = e.pageX;
+        this.mouseY = e.pageY;
+    }, this));
+
+    this.appendTo('body').hide();
+
+
+}
+
+HexColorTooltip.colorRegex = /^(?:#[A-F0-9]{3}|#[A-F0-9]{6})$/i;
+
+HexColorTooltip.prototype = $.extend(new $.Interface, {
+    bindTo: function(elem) {
+
+        var tooltip = this;
+
+        $(elem).each(function(){
+
+            var t = $(this),
+                text = t.text();
+
+            if (HexColorTooltip.colorRegex.test(text)) {
+
+                t.mousemove(function(){
+                    tooltip.setColor(text).show();
+                }).mouseout(function(){
+                    tooltip.hide();
+                });
+
+            }
+
+        });
+
+    },
+    setColor: function(color) {
+        return this.color === color ? this : 
+            this.css('background', this.color = color);
+    },
+    show: function() {
+
+        /// Overriding jQuery.fn.show
+        this.css({
+            top: this.mouseY + this.offsetTop,
+            left: this.mouseX + this.offsetLeft
+        });
+
+        // Call super
+        return this.fn.show.call(this);
+
+    }
+});
+
+// --------
+
+var tooltip = new HexColorTooltip();
+tooltip.bindTo('span');
 
 </script> 
 

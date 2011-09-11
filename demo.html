@@ -1,0 +1,92 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>Demo</title>
+
+<style>
+pre { font-size: 1em; padding: 10px; border-top: 1px solid #000;}
+.sub_list {
+    padding: 20px;
+    font-style: italic;
+}
+</style>
+
+<body>
+
+<h1>jQuery.Interface: Shopping List Demo</h1>
+
+<pre>
+var shoppingList = new WordList,
+
+    food = new Word('Food').appendTo(shoppingList),
+    drinks = new Word('Drinks').appendTo(shoppingList),
+
+    foodItems = new WordList().appendTo(food),
+    drinkItems = new WordList().appendTo(drinks);
+
+foodItems.append(new Word('Eggs'));
+foodItems.append(new Word('Chocolate'));
+
+drinkItems.append(new Word('Cider'));
+drinkItems.append(new Word('Milk'));
+
+shoppingList.appendTo('body');
+</pre>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script src="jquery.interface.js"></script>
+<script>
+
+
+function WordList() {
+
+    this.setDOM('<ul></ul>');
+    this.words = [];
+
+}
+
+WordList.prototype = new jQuery.Interface;
+
+WordList.prototype.append = function(word) {
+
+    // Overriding append.
+
+    this.words.push(word);
+    return this.fn.append.call(this, word);
+
+};
+
+function Word(word) {
+
+    this.setDOM('<li></li>');
+
+    this.word = word;
+    this.text(word);
+
+}
+
+Word.prototype = new jQuery.Interface;
+
+
+//----------------------
+
+var shoppingList = new WordList,
+
+    food = new Word('Food').appendTo(shoppingList),
+    drinks = new Word('Drinks').appendTo(shoppingList),
+
+    foodItems = new WordList().appendTo(food),
+    drinkItems = new WordList().appendTo(drinks);
+
+foodItems.append(new Word('Eggs'));
+foodItems.append(new Word('Chocolate'));
+
+drinkItems.append(new Word('Cider'));
+drinkItems.append(new Word('Milk'));
+
+foodItems.add(drinkItems).addClass('sub_list');
+
+shoppingList.insertAfter('h1');
+
+</script> 
+
+</body>
